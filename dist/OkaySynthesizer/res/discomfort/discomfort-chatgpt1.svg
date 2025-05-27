@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="380" viewBox="0 0 128 380">
+    <!-- Background panel -->
+    <rect width="128" height="380" fill="#222" stroke="#555" stroke-width="2"/>
+    
+    <!-- Mounting holes -->
+    <circle cx="64" cy="10" r="5" fill="none" stroke="#bbb" stroke-width="2"/>
+    <circle cx="64" cy="370" r="5" fill="none" stroke="#bbb" stroke-width="2"/>
+    
+    <!-- Knobs -->
+    <circle cx="32" cy="80" r="12" fill="#333" stroke="#777" stroke-width="2"/>
+    <circle cx="96" cy="80" r="12" fill="#333" stroke="#777" stroke-width="2"/>
+    
+    <!-- Jacks -->
+    <circle cx="32" cy="160" r="8" fill="#111" stroke="#999" stroke-width="2"/>
+    <circle cx="96" cy="160" r="8" fill="#111" stroke="#999" stroke-width="2"/>
+    <circle cx="32" cy="200" r="8" fill="#111" stroke="#999" stroke-width="2"/>
+    <circle cx="96" cy="200" r="8" fill="#111" stroke="#999" stroke-width="2"/>
+    
+    <!-- Labels -->
+    <text x="32" y="110" font-size="12" fill="#fff" text-anchor="middle">Knob 1</text>
+    <text x="96" y="110" font-size="12" fill="#fff" text-anchor="middle">Knob 2</text>
+    <text x="32" y="180" font-size="12" fill="#fff" text-anchor="middle">In</text>
+    <text x="96" y="180" font-size="12" fill="#fff" text-anchor="middle">Out</text>
+    <text x="32" y="220" font-size="12" fill="#fff" text-anchor="middle">CV In</text>
+    <text x="96" y="220" font-size="12" fill="#fff" text-anchor="middle">CV Out</text>
+</svg>

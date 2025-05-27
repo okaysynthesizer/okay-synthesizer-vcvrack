@@ -42,7 +42,7 @@
         "type": "shell",
         "command": "make install",
         "options": {
-          "cwd": "${workspaceRoot}/OkaySynthesizer",
+          "cwd": "${workspaceRoot}",
           "env":{
               "PATH": "/usr/bin",
               "RACK_DIR": "${workspaceRoot}/../Rack-SDK"
