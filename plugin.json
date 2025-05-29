@@ -2,7 +2,7 @@
   "slug": "OkaySynthesizer",
   "name": "Okay Synthesizer",
   "version": "2.0.1",
-  "license": "proprietary",
+  "license": "GPL-3.0-or-later",
   "brand": "Okay Synthesizer",
   "author": "Okay Synthesizer",
   "authorEmail": "rafael@okaysynthesizer.com",
