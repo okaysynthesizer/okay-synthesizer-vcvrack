@@ -23,6 +23,16 @@
         "multiple",
         "clock generator"
       ]
+    },
+    {
+      "slug": "discomfort",
+      "name": "Discomfort",
+      "description": "Discomfort",
+      "tags": [
+        "Distortion",
+        "Distortion",
+        "Distortion"
+      ]
     }
   ]
 }
