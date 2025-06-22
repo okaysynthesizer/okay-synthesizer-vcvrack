@@ -25,9 +25,10 @@ DiscomfortOutput DiscomfortInternal::process(DiscomfortInput input)
   float foldOut = Folder::fold(gainStagedInput, input.foldGain, input.foldOffset, input.foldSymmetry);
   float foldBlend = DryWet::blend(gainStagedInput, foldOut, pow(input.foldDryWet, 2));
 
+  noiseParticle.SetResonance(0.01);
   noiseParticle.SetSpread(map(fclamp(input.distA, 0, 1), 0, 1, 0, 100));
-  noiseParticle.SetResonance(fclamp(input.distB, 0, 1));
-  noiseParticle.SetFreq(map(input.distC, 0, 1, 20, 10000));
+  noiseParticle.SetDensity(fclamp(input.distB, 0.0001, 1));
+  noiseParticle.SetFreq(fclamp(map(input.distC, 0, 1, 20, 10000), 20, 10000));
   float noiseOut = noiseParticle.Process();
   // float noiseOut = noiseParticle.GetNoise();
   // this->noise.SetAmp(input.distC);
