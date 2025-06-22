@@ -4,7 +4,7 @@
 // todo: reorder the words lol
 
 #define FOLDER_MIN_GAIN 1
-#define FOLDER_MAX_GAIN 50
+#define FOLDER_MAX_GAIN 20
 
 #define FOLDER_MIN_OFFSET -1
 #define FOLDER_MAX_OFFSET 1

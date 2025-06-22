@@ -35,7 +35,7 @@ template <typename T> int sgn(T val) {
 //   return sgn(input) * pow (atan (pow (abs(input), bend)), (1 / bend));
 // }
 
-float Clipper::clip(float input, float gain, float bend) {
+float Clipper::clip(float input, float gain, float bend, float _other) {
   input *= gain;
   return softClip(input);
   // // https://www.musicdsp.org/en/latest/Effects/104-variable-hardness-clipping-function.html

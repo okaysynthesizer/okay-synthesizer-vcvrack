@@ -113,7 +113,7 @@ public:
     dcInput.foldDryWet = 0;
     dcInput.distDryWet = 0;
     dcInput.routingMode = SERIAL_AB;
-    dcInput.distMode = DIST_MODE_NOISE_PARTICLE;
+    dcInput.distMode = DIST_MODE_SOFT_CLIP;
     return dcInput;
   }
 
