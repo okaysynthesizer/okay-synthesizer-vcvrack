@@ -135,7 +135,7 @@ struct Discomfort : Module {
 
 		input.input = rackCvToInternal(inputs[IN_L_INPUT].getVoltage());
 		DiscomfortOutput outputL = discomfortInternalL->process(input);
-		outputs[OUT_L_OUTPUT].setVoltage(input.input);
+		outputs[OUT_L_OUTPUT].setVoltage(outputL.audioOutput);
 		outputs[ENV_OUT_OUTPUT].setVoltage(outputL.followerOutput);
 
 		input.input = rackCvToInternal(inputs[IN_R_INPUT].getVoltage());

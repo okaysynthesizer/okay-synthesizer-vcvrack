@@ -1,8 +1,12 @@
 #include <cmath>
 #include "Folder.h"
 
-float Folder::fold(float input, float gain, float offset, float symmetry) {
+float Folder::fold(float input, float gain, float timbre, float _oldsym) {
   float sign = 1;
+
+  float offset = timbre;
+  float symmetry = -1 * timbre;
+  
   input -= offset;
   if(input < 0) {
     sign = -1;

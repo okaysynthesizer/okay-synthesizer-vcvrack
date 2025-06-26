@@ -29,11 +29,17 @@ template <typename T> int sgn(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
-float Clipper::clip(float input, float gain, float bend) {
-  input *= gain;
-  // https://www.musicdsp.org/en/latest/Effects/104-variable-hardness-clipping-function.html
-  return sgn(input) * pow (atan (pow (abs(input), bend)), (1 / bend));
+// float Clipper::clip(float input, float gain, float bend) {
+//   input *= gain;
+//   // https://www.musicdsp.org/en/latest/Effects/104-variable-hardness-clipping-function.html
+//   return sgn(input) * pow (atan (pow (abs(input), bend)), (1 / bend));
+// }
 
+float Clipper::clip(float input, float gain, float bend, float _other) {
+  // TODO: extract to const
+  float _gain = map(gain, 0, 1, CLIPPER_MIN_GAIN, CLIPPER_MAX_GAIN);
+  input *= _gain;
+  return hardClip(input);
 
   // float y = input * gain;
 
