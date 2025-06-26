@@ -87,12 +87,6 @@ public:
     this->envGain = map(envGain, 0, 1, ENV_GAIN_MIN, ENV_GAIN_MAX);
   }
 
-  // void setEnvelopeValues(float gain, float attack, float decay) {
-  //   this->envGain = 1;
-  //   this->attack = 1;
-  //   this->decay = 1;
-  // }
-
   // empty values for development
   static DiscomfortInput create()
   {
