@@ -12,6 +12,19 @@
 #define OUTPUT_MIN_GAIN 0
 #define OUTPUT_MAX_GAIN 5
 
+#define FOLD_MODE_1 1
+
+enum DistModes {
+  DIST_MODE_NOISE_PARTICLE,
+  DIST_MODE_SOFT_CLIP,
+};
+
+enum RoutingModes {
+  SERIAL_AB,
+  SERIAL_BA,
+  PARALLEL,
+};
+
 class DiscomfortInput
 {
 public:
@@ -38,8 +51,12 @@ public:
   float decay;
   float envGain;
 
+  // Dry/Wet
   float foldDryWet;
   float distDryWet;
+
+  RoutingModes routingMode;
+  DistModes distMode;
 
   void setGainValues(float inputGain, float outputGain)
   {
@@ -95,7 +112,8 @@ public:
     dcInput.envGain = 1;
     dcInput.foldDryWet = 0;
     dcInput.distDryWet = 0;
-
+    dcInput.routingMode = SERIAL_AB;
+    dcInput.distMode = DIST_MODE_NOISE_PARTICLE;
     return dcInput;
   }
 

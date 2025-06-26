@@ -10,7 +10,7 @@ enum ClipperType { CLIPPER_HARD, CLIPPER_SOFT, CLIPPER_ALT };
 
 class Clipper {
   public:
-    static float clip(float input, float gain, float bend);
+    static float clip(float input, float C, float B, float A);
 };
 
 #endif

@@ -25,6 +25,9 @@ class DiscomfortInternal {
     FilterBank *filterBank;
     WhiteNoise noise;
     Particle noiseParticle;
+
+    float getFold(float audioIn, DiscomfortInput input);
+    float getDist(float audioIn, DiscomfortInput input);
 };
 
 #endif

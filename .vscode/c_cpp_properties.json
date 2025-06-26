@@ -22,7 +22,8 @@
             "includePath": [
                 "${workspaceFolder}/../Rack-SDK/include/**",
                 "${workspaceFolder}/../Rack-SDK/dep/**",
-                "${workspaceFolder}/DaisySP/Source"
+                "${workspaceFolder}/DaisySP/Source",
+                "${workspaceFolder}/OkaySynthesizer/src/DaisySP/Source"
             ],
             "defines": [
                 "_DEBUG",
