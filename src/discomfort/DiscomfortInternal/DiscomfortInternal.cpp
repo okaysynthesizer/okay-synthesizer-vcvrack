@@ -10,7 +10,7 @@ DiscomfortInternal::DiscomfortInternal() {}
 
 void DiscomfortInternal::init(float sampleRate)
 {
-  this->follower = new Follower(sampleRate, 1.0f, 1.0f);
+  this->follower = new Follower(sampleRate);
   this->filterBank = new FilterBank(sampleRate);
   noise.Init();
   noiseParticle.Init(sampleRate);
@@ -33,12 +33,14 @@ float DiscomfortInternal::getDist(float audioIn, DiscomfortInput input)
   //   float noiseBlend = foldBlend + (noiseOut * input.distDryWet);
   //   output = noiseBlend * input.outputGain;
   // }
-  if(input.distMode == DIST_MODE_SOFT_CLIP) {
+  if (input.distMode == DIST_MODE_SOFT_CLIP)
+  {
     float clippedOut = Clipper::clip(audioIn, input.distC, input.distB, input.distA);
     return DryWet::blend(audioIn, clippedOut, input.distDryWet);
   }
 
-  if(input.distMode == DIST_MODE_NOISE_PARTICLE) {
+  if (input.distMode == DIST_MODE_NOISE_PARTICLE)
+  {
     noiseParticle.SetSpread(map(fclamp(input.distA, 0, 1), 0, 1, 0, 100));
     noiseParticle.SetResonance(fclamp(input.distB, 0.1, 1));
     noiseParticle.SetFreq(map(input.distC, 0, 1, 20, 10000));
@@ -49,21 +51,24 @@ float DiscomfortInternal::getDist(float audioIn, DiscomfortInput input)
 DiscomfortOutput DiscomfortInternal::process(DiscomfortInput input)
 {
   float gainStagedInput = input.input * input.inputGain;
-  float followerAmplitude = this->follower->process(gainStagedInput * input.envGain, input.attack, input.decay);
+  float followerAmplitude = this->follower->process(gainStagedInput, input.envGain, input.attack, input.decay);
 
   float output = 0;
 
-  if(input.routingMode == SERIAL_AB) {
+  if (input.routingMode == SERIAL_AB)
+  {
     float foldOut = this->getFold(gainStagedInput, input);
     output = this->getDist(foldOut, input);
   }
 
-  if(input.routingMode == SERIAL_BA) {
+  if (input.routingMode == SERIAL_BA)
+  {
     float distOut = this->getDist(gainStagedInput, input);
     output = this->getFold(distOut, input);
   }
 
-  if(input.routingMode == PARALLEL) {
+  if (input.routingMode == PARALLEL)
+  {
     float foldOut = this->getFold(gainStagedInput, input);
     float distOut = this->getDist(gainStagedInput, input);
     output = foldOut + distOut;

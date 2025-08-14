@@ -55,6 +55,9 @@ public:
   float foldDryWet;
   float distDryWet;
 
+  // Select
+  int envRoutingSelection; // bitmask for env routing selection
+
   RoutingModes routingMode;
   DistModes distMode;
 

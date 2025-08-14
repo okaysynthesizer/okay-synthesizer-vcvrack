@@ -23,6 +23,8 @@ struct Discomfort : Module {
 		ENV_DECAY_PARAM,
 		FOLD_ENV_CV_PARAM,
 		DIST_ENV_CV_PARAM,
+		ENV_SELECT_A_PARAM,
+		ENV_SELECT_B_PARAM,
 		PARAMS_LEN
 	};
 	enum InputId {
@@ -64,21 +66,23 @@ struct Discomfort : Module {
 
 	Discomfort() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
-		configParam(IN_GAIN_PARAM, 0.f, 1.f, 0.1f, "");
-		configParam(FOLD_MIX_KNOB_PARAM, 0.f, 1.f, 1.f, "");
-		configParam(DIST_MIX_KNOB_PARAM, 0.f, 1.f, 1.f, "");
-		configParam(OUT_GAIN_PARAM, 0.f, 1.f, 0.1f, "");
-		configParam(FOLD_A_KNOB_PARAM, 0.f, 1.f, 0.5f, "");
+		configParam(IN_GAIN_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(FOLD_MIX_KNOB_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(DIST_MIX_KNOB_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(OUT_GAIN_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(FOLD_A_KNOB_PARAM, 0.f, 1.f, 0.f, "");
 		configParam(DIST_A_KNOB_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(ENV_GAIN_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(FOLD_B_KNOB_PARAM, 0.f, 1.f, 0.5f, "");
+		configParam(FOLD_B_KNOB_PARAM, 0.f, 1.f, 0.f, "");
 		configParam(DIST_B_KNOB_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(ENV_ATTACK_PARAM, 0.f, 1.f, 0.1f, "");
 		configParam(FOLD_C_KNOB_PARAM, 0.f, 1.f, 0.f, "");
 		configParam(DIST_C_KNOB_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(ENV_DECAY_PARAM, 0.f, 1.f, 0.1f, "");
+		configParam(ENV_GAIN_PARAM, 0.0001f, 2.f, 0.0001f, "");
+		configParam(ENV_ATTACK_PARAM, 0.001f, 10000.f, 1.f, "");
+		configParam(ENV_DECAY_PARAM, 0.001f, 10000.f, 1.f, "");
 		configParam(FOLD_ENV_CV_PARAM, 0.f, 1.f, 0.f, "");
 		configParam(DIST_ENV_CV_PARAM, 0.f, 1.f, 0.f, "");
+		configParam(ENV_SELECT_A_PARAM, 0.f, 8.f, 0.f, "");
+		configParam(ENV_SELECT_B_PARAM, 0.f, 8.f, 0.f, "");
 		configInput(IN_L_INPUT, "");
 		configInput(IN_R_INPUT, "");
 		configInput(FOLD_MIX_POT_INPUT, "");
@@ -93,6 +97,7 @@ struct Discomfort : Module {
 		configOutput(OUT_L_OUTPUT, "");
 		configOutput(OUT_R_OUTPUT, "");
 
+
 		discomfortInternalL = new DiscomfortInternal();
 		discomfortInternalL->init(APP->engine->getSampleRate());
 		discomfortInternalR = new DiscomfortInternal();
@@ -103,6 +108,7 @@ struct Discomfort : Module {
 	{
 		discomfortInternalL->init(e.sampleRate);
 		discomfortInternalR->init(e.sampleRate);
+
 	}
 
 	void process(const ProcessArgs& args) override {
@@ -141,6 +147,7 @@ struct Discomfort : Module {
 		input.input = rackCvToInternal(inputs[IN_R_INPUT].getVoltage());
 		DiscomfortOutput outputR = discomfortInternalR->process(input);
 		outputs[OUT_R_OUTPUT].setVoltage(outputR.audioOutput);
+		lights[LED_ENV_LIGHT].setSmoothBrightness(outputL.followerOutput, args.sampleTime);
 	}
 };
 
@@ -169,6 +176,8 @@ struct DiscomfortWidget : ModuleWidget {
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(43.715, 107.402)), module, Discomfort::ENV_DECAY_PARAM));
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(8.553, 109.77)), module, Discomfort::FOLD_ENV_CV_PARAM));
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(81.566, 109.115)), module, Discomfort::DIST_ENV_CV_PARAM));
+		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(28.457, 119.713)), module, Discomfort::ENV_SELECT_A_PARAM));
+		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(57.724, 120.08)), module, Discomfort::ENV_SELECT_B_PARAM));
 
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(10.41, 22.62)), module, Discomfort::IN_L_INPUT));
 		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(22.228, 22.62)), module, Discomfort::IN_R_INPUT));
@@ -198,6 +207,5 @@ struct DiscomfortWidget : ModuleWidget {
 		addChild(createLightCentered<MediumLight<RedLight>>(mm2px(Vec(63.093, 92.943)), module, Discomfort::DIST_C_LED_LIGHT));
 	}
 };
-
 
 Model* modelDiscomfort = createModel<Discomfort, DiscomfortWidget>("discomfort");
