@@ -5,25 +5,34 @@
 #include "Clipper.h"
 #include "DryWet.h"
 #include "DiscomfortInput.h"
+#include "Crush.h"
 
-DiscomfortInternal::DiscomfortInternal() {}
+DiscomfortInternal::DiscomfortInternal() {
+  this->follower = nullptr;
+  this->folder = nullptr;
+  this->filterBank = nullptr;
+  this->crush = nullptr;
+}
 
 void DiscomfortInternal::init(float sampleRate)
 {
   this->follower = new Follower(sampleRate);
+  this->folder = new Folder(sampleRate);
   this->filterBank = new FilterBank(sampleRate);
+  this->crush = new Crush(sampleRate);
   noise.Init();
   noiseParticle.Init(sampleRate);
 }
 
 float DiscomfortInternal::getFold(float audioIn, DiscomfortInput input)
 {
-  float foldOut = Folder::fold(audioIn, input.foldGain, input.foldOffset, input.foldSymmetry);
+  float foldOut = this->folder->fold(audioIn, input.foldGain, input.foldOffset, input.foldSymmetry);
   return DryWet::blend(audioIn, foldOut, pow(input.foldDryWet, 2));
 }
 
 float DiscomfortInternal::getDist(float audioIn, DiscomfortInput input)
 {
+  float output = audioIn;
   // if(DIST_MODE_NOISE_PARTICLE) {
   //   // NOTE PLAY WITH DENSITY
   //   noiseParticle.SetSpread(map(fclamp(input.distA, 0, 1), 0, 1, 0, 100));
@@ -36,7 +45,7 @@ float DiscomfortInternal::getDist(float audioIn, DiscomfortInput input)
   if (input.distMode == DIST_MODE_SOFT_CLIP)
   {
     float clippedOut = Clipper::clip(audioIn, input.distC, input.distB, input.distA);
-    return DryWet::blend(audioIn, clippedOut, input.distDryWet);
+    output = clippedOut;
   }
 
   if (input.distMode == DIST_MODE_NOISE_PARTICLE)
@@ -44,8 +53,15 @@ float DiscomfortInternal::getDist(float audioIn, DiscomfortInput input)
     noiseParticle.SetSpread(map(fclamp(input.distA, 0, 1), 0, 1, 0, 100));
     noiseParticle.SetResonance(fclamp(input.distB, 0.1, 1));
     noiseParticle.SetFreq(map(input.distC, 0, 1, 20, 10000));
-    return DryWet::blend(audioIn, audioIn * noiseParticle.Process(), input.distDryWet);
+    output = audioIn * noiseParticle.Process();
   }
+
+  if (input.distMode == DIST_MODE_CRUSH)
+  {
+    output = crush->crush(audioIn, CRUSH_BIT_DEPTH + 1 - map(fclamp(input.distA, 0, 1), 0, 1, 1, CRUSH_BIT_DEPTH));
+  }
+
+  return DryWet::blend(audioIn, output, input.distDryWet);
 }
 
 DiscomfortOutput DiscomfortInternal::process(DiscomfortInput input)

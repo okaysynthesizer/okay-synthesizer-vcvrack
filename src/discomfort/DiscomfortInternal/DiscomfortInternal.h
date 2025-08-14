@@ -6,6 +6,8 @@
 #include "Clipper.h"
 #include "FilterBank.h"
 #include "DiscomfortInput.h"
+#include "Crush.h"
+#include "Folder.h"
 
 using namespace daisysp;
 
@@ -25,6 +27,8 @@ class DiscomfortInternal {
     FilterBank *filterBank;
     WhiteNoise noise;
     Particle noiseParticle;
+    Crush *crush;
+    Folder *folder;
 
     float getFold(float audioIn, DiscomfortInput input);
     float getDist(float audioIn, DiscomfortInput input);

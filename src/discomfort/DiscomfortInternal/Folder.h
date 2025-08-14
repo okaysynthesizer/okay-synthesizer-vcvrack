@@ -15,8 +15,12 @@
 #define FOLDER_MAX_SYMMETRY 1
 
 class Folder {
+  private:
+    float sampleRate;
+
   public:
-    static float fold(float input, float gain, float offset, float symmetry);
+    Folder(float sampleRate);
+    float fold(float input, float gain, float offset, float symmetry);
 };
 
 #endif

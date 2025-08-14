@@ -1,6 +1,9 @@
 #include <cmath>
 #include "Folder.h"
 
+Folder::Folder(float sampleRate) : sampleRate(sampleRate) {
+}
+
 float Folder::fold(float input, float gain, float timbre, float _oldsym) {
   float sign = 1;
 

@@ -17,6 +17,7 @@
 enum DistModes {
   DIST_MODE_NOISE_PARTICLE,
   DIST_MODE_SOFT_CLIP,
+  DIST_MODE_CRUSH,
 };
 
 enum RoutingModes {
@@ -110,7 +111,7 @@ public:
     dcInput.foldDryWet = 0;
     dcInput.distDryWet = 0;
     dcInput.routingMode = SERIAL_AB;
-    dcInput.distMode = DIST_MODE_SOFT_CLIP;
+    dcInput.distMode = DIST_MODE_CRUSH;
     dcInput.envRoutingSelection = 0;
     return dcInput;
   }
