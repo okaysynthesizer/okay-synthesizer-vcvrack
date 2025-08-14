@@ -81,8 +81,8 @@ struct Discomfort : Module {
 		configParam(ENV_DECAY_PARAM, 0.001f, 10000.f, 1.f, "");
 		configParam(FOLD_ENV_CV_PARAM, 0.f, 1.f, 0.f, "");
 		configParam(DIST_ENV_CV_PARAM, 0.f, 1.f, 0.f, "");
-		configParam(ENV_SELECT_A_PARAM, 0.f, 8.f, 0.f, "");
-		configParam(ENV_SELECT_B_PARAM, 0.f, 8.f, 0.f, "");
+		configParam(ENV_SELECT_A_PARAM, 0.f, 7.f, 0.f, ""); // 0-7 for 3 bits
+		configParam(ENV_SELECT_B_PARAM, 0.f, 7.f, 0.f, ""); // 0-7 for 3 bits
 		configInput(IN_L_INPUT, "");
 		configInput(IN_R_INPUT, "");
 		configInput(FOLD_MIX_POT_INPUT, "");
@@ -140,14 +140,33 @@ struct Discomfort : Module {
 		);
 
 		input.input = rackCvToInternal(inputs[IN_L_INPUT].getVoltage());
+		input.envRoutingSelection = (int)round(params[ENV_SELECT_A_PARAM].getValue());
 		DiscomfortOutput outputL = discomfortInternalL->process(input);
 		outputs[OUT_L_OUTPUT].setVoltage(outputL.audioOutput);
-		outputs[ENV_OUT_OUTPUT].setVoltage(outputL.followerOutput);
 
+
+		outputs[ENV_OUT_OUTPUT].setVoltage(outputL.followerOutput);
+		lights[LED_IN_L_LIGHT].setSmoothBrightness(input.input, args.sampleTime);
+		lights[LED_OUT_L_LIGHT].setSmoothBrightness(outputL.audioOutput, args.sampleTime);
+		lights[LED_ENV_LIGHT].setSmoothBrightness(outputL.followerOutput, args.sampleTime);
+		lights[FOLD_A_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 1 ? outputL.followerOutput : 0, args.sampleTime);
+		lights[FOLD_B_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 2 ? outputL.followerOutput : 0, args.sampleTime);
+		lights[FOLD_C_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 4 ? outputL.followerOutput : 0, args.sampleTime);
+
+		
 		input.input = rackCvToInternal(inputs[IN_R_INPUT].getVoltage());
+		input.envRoutingSelection = (int)round(params[ENV_SELECT_B_PARAM].getValue());
 		DiscomfortOutput outputR = discomfortInternalR->process(input);
 		outputs[OUT_R_OUTPUT].setVoltage(outputR.audioOutput);
-		lights[LED_ENV_LIGHT].setSmoothBrightness(outputL.followerOutput, args.sampleTime);
+		lights[LED_IN_R_LIGHT].setSmoothBrightness(input.input, args.sampleTime);
+		lights[LED_OUT_R_LIGHT].setSmoothBrightness(outputR.audioOutput, args.sampleTime);
+		lights[DIST_A_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 1 ? outputL.followerOutput : 0, args.sampleTime);
+		lights[DIST_B_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 2 ? outputL.followerOutput : 0, args.sampleTime);
+		lights[DIST_C_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 4 ? outputL.followerOutput : 0, args.sampleTime);
+
+		// lights[DIST_A_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 4, args.sampleTime);
+		// lights[DIST_B_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 5, args.sampleTime);
+		// lights[DIST_C_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 6, args.sampleTime);
 	}
 };
 

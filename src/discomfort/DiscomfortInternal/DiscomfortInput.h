@@ -111,6 +111,7 @@ public:
     dcInput.distDryWet = 0;
     dcInput.routingMode = SERIAL_AB;
     dcInput.distMode = DIST_MODE_SOFT_CLIP;
+    dcInput.envRoutingSelection = 0;
     return dcInput;
   }
 
