@@ -30,8 +30,12 @@ float DiscomfortInternal::processDistortion(float audioIn, DistModes mode,
   switch (mode) {
 
   case DIST_MODE_WAVEFOLDER: {
-    output = folder->fold(audioIn, parameterToRange(params.b, FOLDER_MIN_GAIN, FOLDER_MAX_GAIN),
-                          parameterToRange(params.a, FOLDER_MIN_TIMBRE, FOLDER_MAX_TIMBRE), 0);
+    output = folder->fold(
+      audioIn,
+      parameterToRange(params.b, FOLDER_MIN_GAIN, FOLDER_MAX_GAIN),
+      parameterToRange(params.a, FOLDER_MIN_TIMBRE, FOLDER_MAX_TIMBRE),
+      0
+    );
     break;
   }
 
@@ -50,13 +54,14 @@ float DiscomfortInternal::processDistortion(float audioIn, DistModes mode,
 
   case DIST_MODE_CRUSH: {
     output = crush->crush(
-        audioIn, CRUSH_BIT_DEPTH + 1 - map(fclamp(params.a, 0, 1), 0, 1, 1, CRUSH_BIT_DEPTH),
-        parameterToRange(params.b, 1, SRR_MAX_SAMPLING_SKIP));
+      audioIn,
+      CRUSH_BIT_DEPTH + 1 - map(fclamp(params.a, 0, 1), 0, 1, 1, CRUSH_BIT_DEPTH),
+      std::floorf(map(params.b, 0, 1, 1, SRR_MAX_SAMPLING_SKIP))
+    );
     break;
   }
 
   default:
-    // No distortion applied for unhandled modes
     break;
   }
 
@@ -64,13 +69,11 @@ float DiscomfortInternal::processDistortion(float audioIn, DistModes mode,
 }
 
 float DiscomfortInternal::getA(float audioIn, DiscomfortInput input) {
-  return (processDistortion(audioIn, input.distModeA, input.distParamsA) * input.distParamsA.mix) +
-         (audioIn * (1 - input.distParamsA.mix));
+  return processDistortion(audioIn, input.distModeA, input.distParamsA);
 }
 
 float DiscomfortInternal::getB(float audioIn, DiscomfortInput input) {
-  return (processDistortion(audioIn, input.distModeB, input.distParamsB) * input.distParamsB.mix) +
-         (audioIn * (1 - input.distParamsB.mix));
+  return processDistortion(audioIn, input.distModeB, input.distParamsB);
 }
 
 DiscomfortOutput DiscomfortInternal::process(DiscomfortInput input) {
@@ -78,28 +81,29 @@ DiscomfortOutput DiscomfortInternal::process(DiscomfortInput input) {
   float followerAmplitude =
       this->follower->process(gainStagedInput, input.envGain, input.attack, input.decay);
 
-  float output = 0;
+  float output = 0.f;
 
-  // if (input.routingMode == SERIAL_AB)
-  // {
-  //   float a = this->getA(gainStagedInput, input);
-  //   output = this->getB(a, input);
-  // }
+  if (input.routingMode == SERIAL_AB)
+  {
+    float a = this->getA(gainStagedInput, input);
+    output = this->getB(a, input);
+  }
 
-  // if (input.routingMode == SERIAL_BA)
-  // {
-  //   float b = this->getB(gainStagedInput, input);
-  //   output = this->getA(b, input);
-  // }
+  if (input.routingMode == SERIAL_BA)
+  {
+    float b = this->getB(gainStagedInput, input);
+    output = this->getA(b, input);
+  }
 
-  // if (input.routingMode == PARALLEL)
-  // {
-  //   float a = this->getA(gainStagedInput, input) * 0.5;
-  //   float b = this->getB(gainStagedInput, input) * 0.5;
-  //   output = a + b;
-  // }
+  if (input.routingMode == PARALLEL)
+  {
+    float a = this->getA(gainStagedInput, input) * 0.5;
+    float b = this->getB(gainStagedInput, input) * 0.5;
+    output = a + b;
+  }
 
-  output = this->getA(gainStagedInput, input);
+  // output = this->getA(gainStagedInput, input);
+  // output = this->getB(output, input);
 
   output = output * input.outputGain;
 

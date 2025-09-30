@@ -107,7 +107,6 @@ struct Discomfort : Module {
 	{
 		discomfortInternalL->init(e.sampleRate);
 		discomfortInternalR->init(e.sampleRate);
-
 	}
 
 	void process(const ProcessArgs& args) override {
@@ -159,7 +158,6 @@ struct Discomfort : Module {
 		lights[FOLD_B_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 2 ? outputL.followerOutput : 0, args.sampleTime);
 		lights[FOLD_C_LED_LIGHT].setSmoothBrightness(input.envRoutingSelection & 4 ? outputL.followerOutput : 0, args.sampleTime);
 
-		
 		input.input = rackCvToInternal(inputs[IN_R_INPUT].getVoltage());
 		input.envRoutingSelection = (int)round(params[ENV_SELECT_B_PARAM].getValue());
 		DiscomfortOutput outputR = discomfortInternalR->process(input);
