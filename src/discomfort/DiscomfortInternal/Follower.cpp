@@ -1,36 +1,35 @@
 #include <cmath>
+#include <algorithm>
 #include "Follower.h"
 
-/**
- * Big thanks to the following article for this code
- * https://kferg.dev/posts/2020/audio-reactive-programming-envelope-followers/
- */
+#define DECAY_FACTOR 2.f
 
-float msToSamples(float sampleRate, float ms) {
-  float samples = (
-    sampleRate *
-    (ms / 1000.0)
-  );
-  return exp(log(0.5) / samples);
+Follower::Follower(float sampleRate)
+{
+    this->sampleRate = sampleRate;
+    this->envelope = 0.f;
 }
 
-Follower::Follower(float sampleRate, float attackMs, float decayMs) {
-  this->sampleRate = sampleRate;
-  this->a_ = msToSamples(this->sampleRate, attackMs);
-  this->b_ = msToSamples(this->sampleRate, decayMs);
-  this->y_ = 0;
-}
+float Follower::process(float x, float sensitivity, float attackMs, float decayMs)
+{
+    float absx = std::fabs(x) * sensitivity;
 
-float Follower::process(float x, float attackMs, float decayMs) {
-  // this->a_ = msToSamples(this->sampleRate, attackMs);
-  // this->b_ = msToSamples(this->sampleRate, decayMs);
-  this->a_ = attackMs;
-  this->b_ = decayMs;
-  const auto abs_x = abs(x);
-  if (abs_x > y_) {
-    y_ = a_ * y_ + (1 - a_) * abs_x;
-  } else {
-    y_ = b_ * y_ + (1 - b_) * abs_x;
-  }
-  return y_;
+    // Convert to base coefficients
+    float attackCoeffBase = std::exp(std::log(0.01f) / (sampleRate * (attackMs * 0.001f)));
+    float decayCoeffBase = std::exp(std::log(0.01f) / (sampleRate * (decayMs * 0.001f)));
+
+    if (absx > envelope)
+    {
+        float levelFactor = daisysp::fclamp(absx - envelope, 0.0f, 1.0f);
+        float curvedAttack = std::pow(attackCoeffBase, 1.0f + levelFactor * 3.f);
+        envelope = curvedAttack * envelope + (1.f - curvedAttack) * absx;
+    }
+    else
+    {
+        float levelFactor = daisysp::fclamp(envelope, 0.0f, 1.0f);
+        float curvedDecay = std::pow(decayCoeffBase, 1.0f + levelFactor * 3.f);
+        envelope = curvedDecay * envelope + (1.f - curvedDecay) * absx;
+    }
+
+    return envelope;
 }

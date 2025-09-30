@@ -1,10 +1,10 @@
 {
-  "slug": "OkaySynthesizer",
-  "name": "Okay Synthesizer",
+  "slug": "OkaySynthesizerDev",
+  "name": "Okay Synthesizer Dev",
   "version": "2.0.1",
   "license": "GPL-3.0-or-later",
-  "brand": "Okay Synthesizer",
-  "author": "Okay Synthesizer",
+  "brand": "Okay SynthesizerDev",
+  "author": "Okay SynthesizerDev",
   "authorEmail": "rafael@okaysynthesizer.com",
   "authorUrl": "https://okaysynthesizer.com/",
   "pluginUrl": "https://okaysynthesizer.com/",
@@ -22,6 +22,16 @@
         "dual",
         "multiple",
         "clock generator"
+      ]
+    },
+    {
+      "slug": "discomfort",
+      "name": "Discomfort",
+      "description": "Discomfort",
+      "tags": [
+        "Distortion",
+        "Distortion",
+        "Distortion"
       ]
     }
   ]

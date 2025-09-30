@@ -1,7 +1,7 @@
 #include "FilterBank.h"
 #include "util.h"
 
-#include "daisysp.h"
+#include "../../DaisySP/Source/daisysp.h"
 using namespace daisysp;
 
 #define FILTERBANK_GAIN_FACTOR 7.0f

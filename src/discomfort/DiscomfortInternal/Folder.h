@@ -6,15 +6,25 @@
 #define FOLDER_MIN_GAIN 1
 #define FOLDER_MAX_GAIN 50
 
-#define FOLDER_MIN_OFFSET -1
-#define FOLDER_MAX_OFFSET 1
+#define FOLDER_MIN_TIMBRE 0
+#define FOLDER_MAX_TIMBRE 1
 
-#define FOLDER_MIN_SYMMETRY -1
+// NOTE:
+// These were originally +/- 1 - changed for tests
+#define FOLDER_MIN_OFFSET 0 
+#define FOLDER_MAX_OFFSET 1 
+
+#define FOLDER_MIN_SYMMETRY 0
 #define FOLDER_MAX_SYMMETRY 1
 
+
 class Folder {
+  private:
+    float sampleRate;
+
   public:
-    static float fold(float input, float gain, float offset, float symmetry);
+    Folder(float sampleRate);
+    float fold(float input, float gain, float offset, float symmetry);
 };
 
 #endif

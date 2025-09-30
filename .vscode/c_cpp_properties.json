@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/../Rack-SDK/include/**",
-                "${workspaceFolder}/../Rack-SDK/dep/**"
+                "${workspaceFolder}/../Rack-SDK/dep/**",
+                "${workspaceFolder}/src/DaisySP/Source"
             ],
             "defines": [
                 "_DEBUG",

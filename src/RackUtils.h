@@ -3,5 +3,5 @@
 
 float rackCvToInternal(float cvValue)
 {
-    return map(cvValue, -5, 5, -1, 1);
+    return fclamp(map(cvValue, -5, 5, -1, 1), -1, 1);
 }

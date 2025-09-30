@@ -1,16 +1,20 @@
-// #ifndef DISCOMFORT_CRUSH_H
-// #define DISCOMFORT_CRUSH_H
+#ifndef DISCOMFORT_CRUSH_H
+#define DISCOMFORT_CRUSH_H
 
-// #include "daisysp.h"
-// using namespace daisysp;
+#include "../../DaisySP/Source/daisysp.h"
+using namespace daisysp;
 
-// class Crush {
-//   public:
-//     Crush(float sampleRate);
-//     float crush(float input, float amount);
-//   private:
-//     Bitcrush bitcrush;
-//     float _sampleRate;
-// };
+#define CRUSH_BIT_DEPTH 16
+#define SRR_MAX_SAMPLING_SKIP 128
 
-// #endif
+class Crush {
+  public:
+    Crush(float sampleRate);
+    float crush(float input, int bitDepth, int samplingSkip);
+  private:
+    float _sampleRate;
+    float lastSample = 0;
+    int samplesSinceLastResample = 0;
+};
+
+#endif

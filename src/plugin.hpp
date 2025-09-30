@@ -11,4 +11,4 @@ extern Plugin* pluginInstance;
 // extern Model* modelMyModule;
 
 extern Model* modelLowstepper;
-// extern Model* modelDiscomfort;
+extern Model* modelDiscomfort;

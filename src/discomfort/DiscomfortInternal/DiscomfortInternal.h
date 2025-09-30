@@ -1,11 +1,13 @@
 #ifndef DISCOMFORT_H
 #define DISCOMFORT_H
 
-#include "daisysp.h"
+#include "../../DaisySP/Source/daisysp.h"
 #include "Follower.h"
 #include "Clipper.h"
 #include "FilterBank.h"
 #include "DiscomfortInput.h"
+#include "Crush.h"
+#include "Folder.h"
 
 using namespace daisysp;
 
@@ -25,6 +27,12 @@ class DiscomfortInternal {
     FilterBank *filterBank;
     WhiteNoise noise;
     Particle noiseParticle;
+    Crush *crush;
+    Folder *folder;
+
+    float getA(float audioIn, DiscomfortInput input);
+    float getB(float audioIn, DiscomfortInput input);
+    float processDistortion(float audioIn, DistModes mode, const DistortionParams& params);
 };
 
 #endif
