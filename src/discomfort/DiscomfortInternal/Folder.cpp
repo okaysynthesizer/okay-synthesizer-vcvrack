@@ -4,6 +4,8 @@
 Folder::Folder(float sampleRate) : sampleRate(sampleRate) {
 }
 
+// timbre is symmetry
+// _oldsym is ignored for now
 float Folder::fold(float input, float gain, float timbre, float _oldsym) {
   float sign = 1;
 

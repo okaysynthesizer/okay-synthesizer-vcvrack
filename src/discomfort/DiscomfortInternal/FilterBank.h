@@ -1,7 +1,7 @@
 #ifndef DISCOMFORT_FILTERBANK_H
 #define DISCOMFORT_FILTERBANK_H
 
-#include "daisysp.h"
+#include "../../DaisySP/Source/daisysp.h"
 using namespace daisysp;
 
 enum FilterBankType { FILTERBANK_OFF, FILTERBANK_ON };

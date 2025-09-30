@@ -1,7 +1,7 @@
 #ifndef DISCOMFORT_H
 #define DISCOMFORT_H
 
-#include "daisysp.h"
+#include "../../DaisySP/Source/daisysp.h"
 #include "Follower.h"
 #include "Clipper.h"
 #include "FilterBank.h"
@@ -30,8 +30,9 @@ class DiscomfortInternal {
     Crush *crush;
     Folder *folder;
 
-    float getFold(float audioIn, DiscomfortInput input);
-    float getDist(float audioIn, DiscomfortInput input);
+    float getA(float audioIn, DiscomfortInput input);
+    float getB(float audioIn, DiscomfortInput input);
+    float processDistortion(float audioIn, DistModes mode, const DistortionParams& params);
 };
 
 #endif

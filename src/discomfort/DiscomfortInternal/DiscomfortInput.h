@@ -12,18 +12,24 @@
 #define OUTPUT_MIN_GAIN 0
 #define OUTPUT_MAX_GAIN 5
 
-#define FOLD_MODE_1 1
-
 enum DistModes {
   DIST_MODE_NOISE_PARTICLE,
   DIST_MODE_SOFT_CLIP,
   DIST_MODE_CRUSH,
+  DIST_MODE_WAVEFOLDER,
 };
 
 enum RoutingModes {
   SERIAL_AB,
   SERIAL_BA,
   PARALLEL,
+};
+
+struct DistortionParams {
+  float a;
+  float b;
+  float c;
+  float mix;
 };
 
 class DiscomfortInput
@@ -33,55 +39,34 @@ public:
   float inputGain;
   float outputGain;
 
-  // wavefolder
-  float foldGain;     // 0 ... N
-  float foldOffset;   // -1 ... +1
-  float foldSymmetry; // -1 ... +1
-
-  // Distortion
-  float distA;
-  float distB;
-  float distC;
-  ClipperType clipperType;
-
-  // Crush
-  float crushValue;
+  RoutingModes routingMode;
+  DistortionParams distParamsA;
+  DistortionParams distParamsB;
+  DistModes distModeA;
+  DistModes distModeB;
 
   // Follower
   float attack;
   float decay;
   float envGain;
 
-  // Dry/Wet
-  float foldDryWet;
-  float distDryWet;
-
   // Select
   int envRoutingSelection; // bitmask for env routing selection
 
-  RoutingModes routingMode;
-  DistModes distMode;
-
-  void setGainValues(float inputGain, float outputGain)
+  void setAParams(float a, float b, float c, float mix)
   {
-    this->inputGain = map(inputGain, 0, 1, INPUT_MIN_GAIN, INPUT_MAX_GAIN);
-    this->outputGain = map(outputGain, 0, 1, OUTPUT_MIN_GAIN, OUTPUT_MAX_GAIN);
+    this->distParamsA.a = a;
+    this->distParamsA.b = b;
+    this->distParamsA.c = c;
+    this->distParamsA.mix = mix;
   }
 
-  void setFolderValues(float gain, float offset, float symmetry, float dryWet)
+  void setBParams(float a, float b, float c, float mix)
   {
-    this->foldGain = map(gain, 0, 1, FOLDER_MIN_GAIN, FOLDER_MAX_GAIN);
-    this->foldOffset = map(offset, 0, 1, FOLDER_MIN_OFFSET, FOLDER_MAX_OFFSET);
-    this->foldSymmetry = map(symmetry, 0, 1, FOLDER_MIN_SYMMETRY, FOLDER_MAX_SYMMETRY);
-    this->foldDryWet = dryWet;
-  }
-
-  void setDistValues(float a, float b, float c, float mix)
-  {
-    this->distA = a;
-    this->distB = b;
-    this->distC = c;
-    this->distDryWet = mix;
+    this->distParamsB.a = a;
+    this->distParamsB.b = b;
+    this->distParamsB.c = c;
+    this->distParamsB.mix = mix;
   }
 
   void setEnvFollowerValues(float attack, float decay, float envGain)
@@ -97,21 +82,20 @@ public:
     DiscomfortInput dcInput;
     dcInput.inputGain = 1;
     dcInput.outputGain = 1;
-    dcInput.foldGain = FOLDER_MIN_GAIN;
-    dcInput.foldOffset = 0;
-    dcInput.foldSymmetry = 0;
-    dcInput.distC = 0;
-    dcInput.distA = 0;
-    dcInput.distB = 0;
-    dcInput.clipperType = CLIPPER_SOFT;
-    dcInput.crushValue = 0;
+    dcInput.distParamsA.a = 0;
+    dcInput.distParamsA.b = 0;
+    dcInput.distParamsA.c = 0;
+    dcInput.distParamsA.mix = 0;
+    dcInput.distParamsB.a = 0;
+    dcInput.distParamsB.b = 0;
+    dcInput.distParamsB.c = 0;
+    dcInput.distParamsB.mix = 0;
     dcInput.attack = 1;
     dcInput.decay = 50;
     dcInput.envGain = 1;
-    dcInput.foldDryWet = 0;
-    dcInput.distDryWet = 0;
     dcInput.routingMode = SERIAL_AB;
-    dcInput.distMode = DIST_MODE_CRUSH;
+    dcInput.distModeA = DIST_MODE_WAVEFOLDER;
+    dcInput.distModeB = DIST_MODE_CRUSH;
     dcInput.envRoutingSelection = 0;
     return dcInput;
   }

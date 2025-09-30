@@ -97,7 +97,6 @@ struct Discomfort : Module {
 		configOutput(OUT_L_OUTPUT, "");
 		configOutput(OUT_R_OUTPUT, "");
 
-
 		discomfortInternalL = new DiscomfortInternal();
 		discomfortInternalL->init(APP->engine->getSampleRate());
 		discomfortInternalR = new DiscomfortInternal();
@@ -114,19 +113,28 @@ struct Discomfort : Module {
 	void process(const ProcessArgs& args) override {
 		DiscomfortInput input = DiscomfortInput::create();
 
-		input.setGainValues(
+		input.inputGain = map(
 			params[IN_GAIN_PARAM].getValue(),
-			params[OUT_GAIN_PARAM].getValue()
+			0, 1,
+			INPUT_MIN_GAIN,
+			INPUT_MAX_GAIN
 		);
-	
-		input.setFolderValues(
+
+		input.outputGain = map(
+			params[OUT_GAIN_PARAM].getValue(),
+			0, 1,
+			OUTPUT_MIN_GAIN,
+			OUTPUT_MAX_GAIN
+		);
+
+		input.setAParams(
 			fclamp(params[FOLD_C_KNOB_PARAM].getValue() + rackCvToInternal(inputs[FOLD_C_CV_INPUT].getVoltage()), 0, 1),
 			fclamp(params[FOLD_B_KNOB_PARAM].getValue() + rackCvToInternal(inputs[FOLD_B_CV_INPUT].getVoltage()), 0, 1),
 			fclamp(params[FOLD_A_KNOB_PARAM].getValue() + rackCvToInternal(inputs[FOLD_A_CV_INPUT].getVoltage()), 0, 1),
 			fclamp(params[FOLD_MIX_KNOB_PARAM].getValue() + rackCvToInternal(inputs[FOLD_MIX_POT_INPUT].getVoltage()), 0, 1)
 		);
 
-		input.setDistValues(
+		input.setBParams(
 			fclamp(params[DIST_A_KNOB_PARAM].getValue() + rackCvToInternal(inputs[DIST_A_CV_INPUT].getVoltage()), 0, 1),
 			fclamp(params[DIST_B_KNOB_PARAM].getValue() + rackCvToInternal(inputs[DIST_B_CV_INPUT].getVoltage()), 0, 1),
 			fclamp(params[DIST_C_KNOB_PARAM].getValue() + rackCvToInternal(inputs[DIST_C_CV_INPUT].getVoltage()), 0, 1),
@@ -143,8 +151,6 @@ struct Discomfort : Module {
 		input.envRoutingSelection = (int)round(params[ENV_SELECT_A_PARAM].getValue());
 		DiscomfortOutput outputL = discomfortInternalL->process(input);
 		outputs[OUT_L_OUTPUT].setVoltage(outputL.audioOutput);
-
-
 		outputs[ENV_OUT_OUTPUT].setVoltage(outputL.followerOutput);
 		lights[LED_IN_L_LIGHT].setSmoothBrightness(input.input, args.sampleTime);
 		lights[LED_OUT_L_LIGHT].setSmoothBrightness(outputL.audioOutput, args.sampleTime);
